@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+
+# Environment files
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE and editor folders
+.vscode/
+.idea/
+
+# Package distribution
+/dist
+/build
+
+# Temporary files
+*.swp
+*.swo
+.vercel
