@@ -24,11 +24,10 @@ import { TUser } from "./user.interface";
     status : {
         type : String,
         enum : ["in-progress" , "blocked"],
-        required : true
+        default : "in-progress"
     },
     isDeleted : {
         type : Boolean,
-        required : true,
         default : false
     }
 },

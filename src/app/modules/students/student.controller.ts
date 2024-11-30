@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
-import { studentValidationSchema } from './student.validation';
+// import { studentValidationSchema } from './student.validation';
 
-const createStudent = async (req: Request, res: Response) => {
+/* const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
     const zodParsedData = studentValidationSchema.parse(studentData);
@@ -21,7 +21,7 @@ const createStudent = async (req: Request, res: Response) => {
       error: err,
     });
   }
-};
+}; */
 
 const getAllStudents = async (req: Request, res: Response) => {
   try {
@@ -82,7 +82,7 @@ const deleteStudent = async (req: Request, res: Response) => {
 };
 
 export const StudentControllers = {
-  createStudent,
+  // createStudent,
   getAllStudents,
   getSingleStudent,
   deleteStudent,
