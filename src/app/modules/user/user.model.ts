@@ -18,7 +18,7 @@ import { TUser } from "./user.interface";
     },
     role : {
         type : String, 
-        enum : ["admin", "student" , "faculty"] ,
+        enum : ['admin', 'student' , 'faculty'] ,
         required : true
     },
     status : {
