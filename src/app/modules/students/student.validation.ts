@@ -47,4 +47,3 @@ export const studentValidationSchema = z.object({
   isDeleted: z.boolean().optional().default(false),
 });
 
-export default studentValidationSchema;
