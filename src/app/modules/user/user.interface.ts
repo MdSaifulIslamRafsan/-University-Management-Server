@@ -7,3 +7,9 @@ export interface TUser {
     status: "in-progress" | "blocked";
     isDeleted : boolean;
 }
+
+/* export interface TNewUser {
+    role : string;
+    password: string;
+    id : string;
+} */

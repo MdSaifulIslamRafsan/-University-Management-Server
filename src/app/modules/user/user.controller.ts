@@ -1,12 +1,13 @@
-import { Request, Response } from 'express';
-import userSchemaValidation from './user.validation';
+import { Request, Response, NextFunction } from 'express';
+// import userSchemaValidation from './user.validation';
+import { userService } from './user.service';
 
-const createStudent = async (req: Request, res: Response) => {
+const createStudent = async (req: Request, res: Response , next : NextFunction) => {
   try {
-    const { student: studentData } = req.body;
-    const zodParsedData = userSchemaValidation.parse(studentData);
+    const { password , student: studentData} = req.body;
+    // const zodParsedData = userSchemaValidation.parse(studentData);
 
-    const result = await 
+    const result = await userService.createStudentIntoDB(password , studentData);
 
     res.status(200).json({
       success: true,
@@ -14,11 +15,7 @@ const createStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err || 'something went wrong',
-      error: err,
-    });
+    next(err)
   }
 };
 

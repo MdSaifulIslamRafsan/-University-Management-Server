@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import { StudentModel, TGuardian, TLocalGuardian, TStudent, TUserName } from './student.interface';
 
@@ -56,6 +55,7 @@ const localGuradianSchema = new Schema<TLocalGuardian>({
     type: String,
     required: [true, 'Name is required'],
   },
+ 
   occupation: {
     type: String,
     required: [true, 'Occupation is required'],
@@ -73,10 +73,12 @@ const localGuradianSchema = new Schema<TLocalGuardian>({
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: [true, 'ID is required'], unique: true },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-      maxlength: [20, 'Password can not be more than 20 characters'],
+   
+    user : {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User ID is required'],
+      unique : true,
     },
     name: {
       type: userNameSchema,
@@ -125,14 +127,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local guardian information is required'],
     },
     profileImg: { type: String },
-    isActive: {
-      type: String,
-      enum: {
-        values: ['active', 'blocked'],
-        message: '{VALUE} is not a valid status',
-      },
-      default: 'active',
-    },
+  
     isDeleted: {
       type: Boolean,
       default: false,
@@ -150,22 +145,7 @@ studentSchema.virtual('fullName').get(function () {
   return this.name.firstName + this.name.middleName + this.name.lastName;
 });
 
-// pre save middleware/ hook : will work on create()  save()
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook : we will save  data');
 
-  // hashing password and save into DB
-  this.password = await bcrypt.hash(
-    this.password, 10
-  );
-  next();
-});
-
-// post save middleware / hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
 
 // Query Middleware
 studentSchema.pre('find', function (next) {
