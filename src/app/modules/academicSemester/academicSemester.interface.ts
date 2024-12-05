@@ -12,3 +12,7 @@ export interface TAcademicSemester {
     endMonth : TMonths
 
 }
+
+export interface TAcademicSemesterCodeAndNameMapper {
+    [key : string] : string
+ }

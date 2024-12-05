@@ -32,7 +32,8 @@ const localGuardianSchema = z.object({
   body : z.object({
     password: z.string().max(20),
     student : z.object({
-      name: userNameSchema,
+    name: userNameSchema,
+    AdmissonSemester : z.string(),
     gender: z.enum(['male', 'female', 'other']),
     dateOfBirth: z.date().optional(),
     email: z.string().email(),

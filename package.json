@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "start:dev": "nodemon dist/index.js",
+    "start": "node dist/server.js",
+    "start:dev": "nodemon dist/server.js",
     "start:prod": "ts-node-transpile-only ./src/server.ts",
     "build": "tsc -w",
     "lint": "eslint src/**/*.ts",
