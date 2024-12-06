@@ -22,7 +22,7 @@ import { AcademicSemesterRoutes } from '../modules/academicSemester/academicSeme
 
  modulesRoutes.forEach(route => router.use(route.path , route.route));
 
- router.use("/students", StudentRoutes )
+ router.use("/students", StudentRoutes );
 
 
 
