@@ -80,7 +80,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'User ID is required'],
       unique : true,
     },
-    AdmissonSemester :{
+    admissionSemester :{
       type : Schema.Types.ObjectId,
       ref : 'AcademicSemester',
 

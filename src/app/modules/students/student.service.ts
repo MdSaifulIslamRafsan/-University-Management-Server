@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Student } from './student.model';
 
 
@@ -8,13 +9,13 @@ const getAllStudentsFromDB = async () => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.aggregate([{ $match: { id } }]);
+  const result = await Student.aggregate([{ $match: { _id: new mongoose.Types.ObjectId(id) } }]);
+
   return result;
 };
 
 const deleteStudentFromDB = async (id: string) => {
-  const result = await Student.updateOne({ id }, { isDeleted: true });
-  console.log(result);
+  const result = await Student.updateOne({_id : new mongoose.Types.ObjectId(id)}, { isDeleted: true });
   return result;
 };
 
