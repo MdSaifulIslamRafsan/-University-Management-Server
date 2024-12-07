@@ -22,6 +22,10 @@ const createStudentIntoDB = async (password : string ,payload: TStudent) => {
   // find academic semester info
   const admissionSemester = await AcademicSemester.findById(payload.admissionSemester);
 
+  console.log('line 25' ,payload);
+  console.log('line 26' ,admissionSemester);
+  
+
 
 
   // set auto generated id
@@ -31,7 +35,7 @@ const createStudentIntoDB = async (password : string ,payload: TStudent) => {
     const newUser = await User.create(userData);
 
     // create a new student
-
+// this line i don't understand
     if(Object.keys(newUser).length) {
       payload.id = newUser.id;
       payload.user = newUser._id;
