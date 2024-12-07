@@ -22,17 +22,17 @@ const createStudentIntoDB = async (password : string ,payload: TStudent) => {
   // find academic semester info
   const admissionSemester = await AcademicSemester.findById(payload.admissionSemester);
 
-  console.log('line 25' ,payload);
-  console.log('line 26' ,admissionSemester);
-  
-
+if(!admissionSemester){
+  throw new Error('admissionSemester not found')
+}
 
 
   // set auto generated id
-  userData.id = await generatedStudentId(admissionSemester!)
+  userData.id = await generatedStudentId(admissionSemester)
 
   //  create new user and save student data in database
     const newUser = await User.create(userData);
+   
 
     // create a new student
 // this line i don't understand
