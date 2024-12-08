@@ -1,4 +1,3 @@
-
 import express from "express"
 import { AcademicFacultyController } from "./academicFaculty.controller";
 import validateRequest from "../../middleware/validateRequest";
@@ -10,6 +9,9 @@ router.post('/' , validateRequest(AcademicFacultyValidation.createAcademicFacult
 
 router.get('/', AcademicFacultyController.getAllAcademicFaculty)
 
-router.get('/:id' , AcademicFacultyController.getSingleAcademicFaculty)
+router.get('/:id' , AcademicFacultyController.getSingleAcademicFaculty);
+
+router.patch('/:id', validateRequest(AcademicFacultyValidation.updateAcademicFacultyValidation) , AcademicFacultyController.updateAcademicFaculty)
+
 
 export const AcademicFacultyRouter = router;
