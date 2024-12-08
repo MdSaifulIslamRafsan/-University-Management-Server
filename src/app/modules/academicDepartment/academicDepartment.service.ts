@@ -18,9 +18,16 @@ const getSingleAcademicDepartmentIntoDB = (id : string) => {
     return result;
 }
 
+const updateAcademicDepartmentIntoDB = (id : string , payload : TAcademicDepartment) => {
+    const result = AcademicDepartment.findByIdAndUpdate(id , payload, {new : true});
+    return result;
+}
+
+
 export const AcademicDepartmentService = {
     createAcademicDepartmentIntoDB,
     getAcademicDepartmentIntoDB, 
-    getSingleAcademicDepartmentIntoDB
+    getSingleAcademicDepartmentIntoDB,
+    updateAcademicDepartmentIntoDB
 
 }
