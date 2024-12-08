@@ -7,7 +7,8 @@ const router = express.Router();
 
 router.post('/', validateRequest(AcademicDepartmentValidation.createAcademicDepartmentValidation) , AcademicDepartmentController.createAcademicDepartment);
 
-router.get('/', AcademicDepartmentController.getAcademicDepartment)
+router.get('/', AcademicDepartmentController.getAcademicDepartment);
+router.get('/:id' , AcademicDepartmentController.getSingleAcademicDepartment);
 
 
 

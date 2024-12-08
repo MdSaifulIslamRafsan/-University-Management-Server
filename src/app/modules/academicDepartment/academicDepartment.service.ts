@@ -12,8 +12,15 @@ const getAcademicDepartmentIntoDB = () => {
     return result;
 }
 
+
+const getSingleAcademicDepartmentIntoDB = (id : string) => {
+    const result = AcademicDepartment.findById(id);
+    return result;
+}
+
 export const AcademicDepartmentService = {
     createAcademicDepartmentIntoDB,
-    getAcademicDepartmentIntoDB
+    getAcademicDepartmentIntoDB, 
+    getSingleAcademicDepartmentIntoDB
 
 }

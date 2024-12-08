@@ -25,11 +25,24 @@ const getAcademicDepartment = catchAsync(async(req , res) => {
         message: "Academic Department fetched successfully",
         data: result,
     })
+});
+
+const getSingleAcademicDepartment = catchAsync(async(req , res) => {
+    const {id} = req.params;
+    const result = await AcademicDepartmentService.getSingleAcademicDepartmentIntoDB(id);
+
+    sendResponse(res , {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Academic Department fetched successfully",
+        data: result,
+    })
 })
 
 
 
 export const AcademicDepartmentController = {
     createAcademicDepartment,
-    getAcademicDepartment
+    getAcademicDepartment,
+    getSingleAcademicDepartment
 }
