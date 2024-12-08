@@ -6,6 +6,12 @@ const createAcademicFacultyIntoDB = (payload : TAcademicFaculty) => {
     return result;
 }
 
+const getAllAcademicFacultyIntoDB = () => {
+    const result = AcademicFaculty.find({});
+    return result;
+}
+
 export const AcademicFacultyService = {
-    createAcademicFacultyIntoDB
+    createAcademicFacultyIntoDB,
+    getAllAcademicFacultyIntoDB
 }
