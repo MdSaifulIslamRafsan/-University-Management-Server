@@ -7,7 +7,13 @@ const createAcademicDepartmentIntoDB = (payload : TAcademicDepartment) => {
     return result;
 }
 
+const getAcademicDepartmentIntoDB = () => {
+    const result = AcademicDepartment.find({});
+    return result;
+}
+
 export const AcademicDepartmentService = {
     createAcademicDepartmentIntoDB,
+    getAcademicDepartmentIntoDB
 
 }
