@@ -14,4 +14,4 @@ router.get('/:id' , AcademicFacultyController.getSingleAcademicFaculty);
 router.patch('/:id', validateRequest(AcademicFacultyValidation.updateAcademicFacultyValidation) , AcademicFacultyController.updateAcademicFaculty)
 
 
-export const AcademicFacultyRouter = router;
+export const AcademicFacultyRoutes = router;
