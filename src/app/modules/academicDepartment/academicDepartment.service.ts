@@ -18,7 +18,13 @@ const getSingleAcademicDepartmentIntoDB = (id : string) => {
     return result;
 }
 
-const updateAcademicDepartmentIntoDB = (id : string , payload : TAcademicDepartment) => {
+const updateAcademicDepartmentIntoDB = async(id : string , payload : TAcademicDepartment) => {
+  /*   const isExist  = await AcademicDepartment.findById(id);
+    if(!isExist) {
+        throw new Error("Academic department not found");
+    } */
+
+
     const result = AcademicDepartment.findByIdAndUpdate(id , payload, {new : true});
     return result;
 }
