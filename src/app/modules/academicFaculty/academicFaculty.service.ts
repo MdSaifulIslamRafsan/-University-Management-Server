@@ -11,7 +11,14 @@ const getAllAcademicFacultyIntoDB = () => {
     return result;
 }
 
+const singleAcademicFacultyIntoDB = (id: string) =>{
+   
+    const result = AcademicFaculty.findById(id);
+    return result;
+}
+
 export const AcademicFacultyService = {
     createAcademicFacultyIntoDB,
-    getAllAcademicFacultyIntoDB
+    getAllAcademicFacultyIntoDB,
+    singleAcademicFacultyIntoDB
 }
