@@ -1,4 +1,7 @@
+import mongoose from 'mongoose';
 import { Student } from './student.model';
+import AppError from '../../errors/AppErrors';
+import { StatusCodes } from 'http-status-codes';
 
 const getAllStudentsFromDB = async () => {
   const result = await Student.find()
@@ -30,16 +33,32 @@ const getSingleStudentFromDB = async (id: string) => {
 
 
 
-
 const deleteStudentFromDB = async (id: string) => {
+  // create session 
 
+  const session = await mongoose.startSession();
 
-  const result = await Student.findByIdAndUpdate(
+  // start Transaction
+   session.startTransaction();
+
+ try {
+  const deletedStudent = await Student.findByIdAndUpdate(
     { id: id },
     { isDeleted: true },
     {new : true}
   );
-  return result;
+  if (!deletedStudent) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Student not found');
+  }
+  await session.commitTransaction();
+  await session.endSession();
+  return deletedStudent;
+ } catch (error) {
+  await session.abortTransaction();
+  await session.endSession();
+  throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to Delete')
+
+ }
 };
 
 export const StudentServices = {
