@@ -34,6 +34,7 @@ const localGuardianSchema = z.object({
     student : z.object({
     name: userNameSchema,
     admissionSemester : z.string(),
+    academicDepartment : z.string(),
     gender: z.enum(['male', 'female', 'other']),
     dateOfBirth: z.string().optional(),
     email: z.string().email(),

@@ -8,13 +8,13 @@ const createAcademicDepartmentIntoDB = (payload : TAcademicDepartment) => {
 }
 
 const getAcademicDepartmentIntoDB = () => {
-    const result = AcademicDepartment.find({});
+    const result = AcademicDepartment.find({}).populate("academicFaculty");
     return result;
 }
 
 
 const getSingleAcademicDepartmentIntoDB = (id : string) => {
-    const result = AcademicDepartment.findById(id);
+    const result = AcademicDepartment.findById(id).populate("academicFaculty");
     return result;
 }
 
