@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { StudentModel, TGuardian, TLocalGuardian, TStudent, TUserName } from './student.interface';
+import AppError from '../../errors/AppErrors';
+import { StatusCodes } from 'http-status-codes';
 
 
 const userNameSchema = new Schema<TUserName>({
@@ -154,7 +156,19 @@ studentSchema.virtual('fullName').get(function () {
   return this.name.firstName + this.name.middleName + this.name.lastName;
 });
 
+// 
 
+/* studentSchema.pre('findOne' , async function(next){
+const {id} =  this.getQuery();
+console.log('163 line', id)
+  const isExist = await Student.findOne({id});
+  console.log('165 line', isExist)
+  if(!isExist){
+    throw new AppError(StatusCodes.NOT_FOUND ,"student not found");
+  }
+
+  next();
+}) */
 
 // Query Middleware
 studentSchema.pre('find', function (next) {

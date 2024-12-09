@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Student } from './student.model';
 import AppError from '../../errors/AppErrors';
 import { StatusCodes } from 'http-status-codes';
+import { TStudent } from './student.interface';
 
 const getAllStudentsFromDB = async () => {
   const result = await Student.find()
@@ -14,23 +15,19 @@ const getAllStudentsFromDB = async () => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  /* const result = await Student.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
-    {
-      $lookup : {
-        from: 'admissionSemester',
-        localField: 'admissionSemester',
-        foreignField: '_id',
-        as: 'admissionSemester'
-      }
-    }
-  ]); */
-  const result = await Student.findById(id)
+  
+  const result = await Student.findOne({id})
     .populate('admissionSemester')
     .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
   return result;
 };
 
+const updatedStudentFromDB = async ( id : string , payload : Partial<TStudent>) => {
+
+  const result = await Student.findOneAndUpdate({id} , payload , {new : true} );
+  return result;
+
+}
 
 
 const deleteStudentFromDB = async (id: string) => {
@@ -38,15 +35,17 @@ const deleteStudentFromDB = async (id: string) => {
 
   const session = await mongoose.startSession();
 
-  // start Transaction
-   session.startTransaction();
+  
 
  try {
+  // start Transaction
+  session.startTransaction();
   const deletedStudent = await Student.findByIdAndUpdate(
-    { id: id },
+    { id},
     { isDeleted: true },
     {new : true}
   );
+  console.log(deletedStudent)
   if (!deletedStudent) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Student not found');
   }
@@ -56,7 +55,7 @@ const deleteStudentFromDB = async (id: string) => {
  } catch (error) {
   await session.abortTransaction();
   await session.endSession();
-  throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to Delete')
+  throw new AppError(StatusCodes.BAD_REQUEST, 'Failed to Delete' )
 
  }
 };
@@ -65,4 +64,5 @@ export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
   deleteStudentFromDB,
+  updatedStudentFromDB
 };

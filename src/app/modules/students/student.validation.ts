@@ -50,7 +50,34 @@ const localGuardianSchema = z.object({
   })
  });
 
+const updateStudentValidationSchema = z.object({
+  body: z.object({
+    student: z
+      .object({
+        name: userNameSchema.partial(),
+        admissionSemester: z.string().optional(),
+        academicDepartment: z.string().optional(),
+        gender: z.enum(['male', 'female', 'other']).optional(),
+        dateOfBirth: z.string().optional(),
+        email: z.string().email().optional(),
+        contactNo: z.string().optional(),
+        emergencyContactNo: z.string().optional(),
+        bloodGroups: z
+          .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+          .optional(),
+        presentAddress: z.string().optional(),
+        permanentAddress: z.string().optional(),
+        guardian: guardianSchema.partial(),
+        localGuardian: localGuardianSchema.partial(),
+        profileImgUrl: z.string().optional(),
+      })
+      .partial(),
+  }),
+});
+
+
 export const studentValidations = {
-  createStudentValidationSchema
+  createStudentValidationSchema,
+  updateStudentValidationSchema
 }
 
