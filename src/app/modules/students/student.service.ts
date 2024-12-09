@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { Student } from './student.model';
 
 const getAllStudentsFromDB = async () => {
@@ -29,10 +28,16 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
+
+
+
 const deleteStudentFromDB = async (id: string) => {
-  const result = await Student.updateOne(
-    { _id: new mongoose.Types.ObjectId(id) },
+
+
+  const result = await Student.findByIdAndUpdate(
+    { id: id },
     { isDeleted: true },
+    {new : true}
   );
   return result;
 };
