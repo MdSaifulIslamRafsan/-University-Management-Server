@@ -3,6 +3,7 @@ import { Student } from './student.model';
 import AppError from '../../errors/AppErrors';
 import { StatusCodes } from 'http-status-codes';
 import { TStudent } from './student.interface';
+import User from '../user/user.model';
 
 const getAllStudentsFromDB = async () => {
   const result = await Student.find()
@@ -24,6 +25,7 @@ const getSingleStudentFromDB = async (id: string) => {
 
 const updatedStudentFromDB = async ( id : string , payload : Partial<TStudent>) => {
 
+
   const result = await Student.findOneAndUpdate({id} , payload , {new : true} );
   return result;
 
@@ -40,15 +42,27 @@ const deleteStudentFromDB = async (id: string) => {
  try {
   // start Transaction
   session.startTransaction();
-  const deletedStudent = await Student.findByIdAndUpdate(
+
+  // Transaction - 1
+  const deletedStudent = await Student.findOneAndUpdate(
     { id},
     { isDeleted: true },
     {new : true}
   );
-  console.log(deletedStudent)
   if (!deletedStudent) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Student not found');
   }
+// Transaction - 2
+  const deletedUser = await User.findOneAndUpdate(
+    {id},
+    {isDeleted : true},
+    {new: true}
+  )
+  if (!deletedUser) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+
+
   await session.commitTransaction();
   await session.endSession();
   return deletedStudent;

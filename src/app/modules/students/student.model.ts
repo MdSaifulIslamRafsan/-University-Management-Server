@@ -114,7 +114,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: String,
       required: [true, 'Emergency contact number is required'],
     },
-    bloogGroup: {
+    bloodGroup: {
       type: String,
       enum: {
         values: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
@@ -158,17 +158,17 @@ studentSchema.virtual('fullName').get(function () {
 
 // 
 
-/* studentSchema.pre('findOne' , async function(next){
+studentSchema.pre('findOne' , async function(next){
 const {id} =  this.getQuery();
 console.log('163 line', id)
-  const isExist = await Student.findOne({id});
+  const isExist = await Student.find({id});
   console.log('165 line', isExist)
-  if(!isExist){
+  if(!isExist.length){
     throw new AppError(StatusCodes.NOT_FOUND ,"student not found");
   }
 
   next();
-}) */
+})
 
 // Query Middleware
 studentSchema.pre('find', function (next) {
