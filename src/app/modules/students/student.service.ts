@@ -30,7 +30,6 @@ const updatedStudentFromDB = async ( id : string , payload : Partial<TStudent>) 
   const modifiedUpdatedData : Record<string , unknown> =  {
     ...remainingStudentData
   }
-console.log('line number 33',Object.entries(name))
   if(name && Object.keys(name).length){
     for(const [key , value] of Object.entries(name)){
       modifiedUpdatedData[`name.${key}`] = value
