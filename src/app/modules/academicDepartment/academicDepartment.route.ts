@@ -5,11 +5,23 @@ import { AcademicDepartmentValidation } from './academicDepartment.validation';
 
 const router = express.Router();
 
-router.post('/', validateRequest(AcademicDepartmentValidation.createAcademicDepartmentValidation) , AcademicDepartmentController.createAcademicDepartment);
+router.post(
+  '/',
+//   validateRequest(
+//     AcademicDepartmentValidation.createAcademicDepartmentValidation,
+//   ),
+  AcademicDepartmentController.createAcademicDepartment,
+);
 
 router.get('/', AcademicDepartmentController.getAcademicDepartment);
-router.get('/:id' , AcademicDepartmentController.getSingleAcademicDepartment);
+router.get('/:id', AcademicDepartmentController.getSingleAcademicDepartment);
 
-router.patch('/:id' , validateRequest(AcademicDepartmentValidation.updateAcademicDepartmentValidation) , AcademicDepartmentController.updatedAcademicDepartment);
+router.patch(
+  '/:id',
+  validateRequest(
+    AcademicDepartmentValidation.updateAcademicDepartmentValidation,
+  ),
+  AcademicDepartmentController.updatedAcademicDepartment,
+);
 
 export const AcademicDepartmentRoutes = router;
