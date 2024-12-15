@@ -20,7 +20,7 @@ const AcademicDepartmentSchema = new Schema<TAcademicDepartment>(
   },
 );
 
-AcademicDepartmentSchema.pre('save', async function (next) {
+/* AcademicDepartmentSchema.pre('save', async function (next) {
   const isExist = await AcademicDepartment.findOne({
     name: this.name,
   });
@@ -31,7 +31,7 @@ AcademicDepartmentSchema.pre('save', async function (next) {
     );
   }
   next();
-});
+}); */
 
 AcademicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
   const id = this.getQuery();

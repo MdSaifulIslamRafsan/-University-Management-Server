@@ -5,6 +5,7 @@ import config from '../config';
 import handleZodError from '../errors/handleZodError';
 import handleValidationError from '../errors/handleValidationError.';
 import handleCastError from '../errors/handleCastError';
+import handleDuplicateError from '../errors/handleDuplicateError';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -36,6 +37,12 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
+  }else if (err?.code === 11000){
+    const simplifiedError = handleDuplicateError(err);
+    errorStatus = simplifiedError.statusCode;
+    errorMessage = simplifiedError.message;
+    errorSource = simplifiedError.errorSources;
+
   }
 
   res.status(errorStatus).send({

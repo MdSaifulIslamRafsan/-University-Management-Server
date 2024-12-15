@@ -11,7 +11,7 @@ const handleCastError = (err : mongoose.Error.CastError) : TGenericErrorResponse
 
     return {
         statusCode,
-        message: "Invalid _id",
+        message: "Invalid Id",
         errorSources
     };
 };
