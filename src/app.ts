@@ -12,9 +12,9 @@ app.use(cors());
 app.use("/api/v1", router);
 
 app.get('/' , (req : Request, res : Response) => {
-    Promise.reject()
+    // Promise.reject()
     
-    // res.send('Welcome to the Node.js and Express API');
+    res.send('Welcome to the Node.js and Express API');
 })
 
 // global error handler
