@@ -6,11 +6,12 @@ import handleZodError from '../errors/handleZodError';
 import handleValidationError from '../errors/handleValidationError.';
 import handleCastError from '../errors/handleCastError';
 import handleDuplicateError from '../errors/handleDuplicateError';
+import AppError from '../errors/AppErrors';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let errorStatus = err.statusCode || 500;
-  let errorMessage = err.message || 'Something went wrong!';
+  let errorStatus =  500;
+  let errorMessage = 'Something went wrong!';
 
 
 
@@ -43,7 +44,15 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
 
+  }else if(err instanceof AppError){
+    errorStatus = err.statusCode;
+    errorMessage = err.message;
+    errorSource = [{
+      path: '',
+      message: err?.message,
+    }]
   }
+ 
 
   res.status(errorStatus).send({
     success: false,
