@@ -9,21 +9,40 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   console.log('base query', query)
   let searchTerm = '';
 
+  const queryObj = {...query}
+
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
-const studentSearchAbelQuery = ['email', 'name.firstName', 'presentAddress']
-  const result = await Student.find({
+
+  const studentSearchAbelQuery = ['email', 'name.firstName', 'presentAddress']
+
+
+
+  const searchQuery = Student.find({
     $or: studentSearchAbelQuery.map((field) => ({
       [field]: { $regex: searchTerm, $options : 'i' },
     })),
   })
+  const excludedFields = ['searchTerm' , 'sort']
+  excludedFields.forEach((field) => delete queryObj[field]);
+
+  const filterQuery =  searchQuery.find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: { path: 'academicFaculty' },
     });
-  return result;
+
+    let sort = '-createdAt'
+    if(query?.sort){
+      sort = query?.sort as string;
+    }
+
+    
+
+    const sortQuery = await filterQuery.sort(sort);
+  return sortQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
