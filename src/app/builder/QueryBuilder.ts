@@ -32,6 +32,13 @@ class QueryBuilder<T> {
     const sort = this?.query?.sort ||  '-createdAt';
     this.modelQuery = this.modelQuery.sort(sort as string);
   }
+  paginate(){
+    const page = parseInt(this.query?.page as string) || 1;
+    const limit = parseInt(this.query?.limit as string) || 1;
+    const skip = (page - 1) * limit;
+    this.modelQuery = this.modelQuery.skip(skip).limit(limit);
+    return this;
+  }
   
 
 }
