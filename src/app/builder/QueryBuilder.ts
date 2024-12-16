@@ -21,32 +21,32 @@ class QueryBuilder<T> {
     }
     return this;
   }
-  filter(){
-    const queryObj = this.query;
-    const excludedFields = ['searchTerm', 'sort' , 'limit' , 'page' , 'fields'];
-    excludedFields.forEach(field => delete queryObj[field]);
+  filter() {
+    const queryObj = { ...this.query };
+    const excludedFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+    excludedFields.forEach((field) => delete queryObj[field]);
     this.modelQuery = this.modelQuery.find(queryObj);
     return this;
   }
-  sort(){
-    const sort = this?.query?.sort ||  '-createdAt';
+  sort() {
+    const sort = this?.query?.sort || '-createdAt';
     this.modelQuery = this.modelQuery.sort(sort as string);
+    return this;
   }
-  paginate(){
+  paginate() {
     const page = parseInt(this.query?.page as string) || 1;
     const limit = parseInt(this.query?.limit as string) || 1;
     const skip = (page - 1) * limit;
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
     return this;
   }
-  fields(){
-    const fields = (this.query?.fields as string).split(',').join(' ') || "-__v" ;
+  fields() {
+    const fields =
+      (this?.query?.fields as string)?.split(',')?.join(' ') || '-__v';
     this.modelQuery = this.modelQuery.select(fields);
     return this;
-
   }
-  
-
 }
+
 
 export default QueryBuilder;

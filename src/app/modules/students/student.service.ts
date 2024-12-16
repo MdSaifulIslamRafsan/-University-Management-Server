@@ -4,9 +4,11 @@ import AppError from '../../errors/AppErrors';
 import { StatusCodes } from 'http-status-codes';
 import { TStudent } from './student.interface';
 import User from '../user/user.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchAbelQuery } from './studantConstant';
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  /* console.log('base query', query);
+ /*  console.log('base query', query);
   let searchTerm = '';
 
   const queryObj = { ...query };
@@ -65,15 +67,23 @@ if(query?.fields){
 }
 
 const fieldsQuery = await limitQuery.select(fields);
-  return fieldsQuery;
+  return fieldsQuery; */
+  
+  const studentQuery = new QueryBuilder(Student.find().populate('admissionSemester')
+  .populate({
+    path: 'academicDepartment',
+    populate: { path: 'academicFaculty' },
+  }), query).search(studentSearchAbelQuery).search(studentSearchAbelQuery).filter().sort().paginate().fields();
+  const result = await studentQuery.modelQuery;
+
+return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
   const result = await Student.findOne({ id })
     .populate('admissionSemester')
     .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
-  return result; */
-
+  return result;
 
   
 };
