@@ -5,3 +5,11 @@ export interface TPreRequisiteCourse {
     isDeleted : boolean,
 }
 
+export interface TCourse {
+    title : string,
+    prefix : string,
+    code : number,
+    credits : number,
+    preRequisiteCourse : [];
+
+}
