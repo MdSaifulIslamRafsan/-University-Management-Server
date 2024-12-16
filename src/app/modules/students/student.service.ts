@@ -6,7 +6,7 @@ import { TStudent } from './student.interface';
 import User from '../user/user.model';
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  console.log('base query', query);
+  /* console.log('base query', query);
   let searchTerm = '';
 
   const queryObj = { ...query };
@@ -72,7 +72,10 @@ const getSingleStudentFromDB = async (id: string) => {
   const result = await Student.findOne({ id })
     .populate('admissionSemester')
     .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
-  return result;
+  return result; */
+
+
+  
 };
 
 const updatedStudentFromDB = async (id: string, payload: Partial<TStudent>) => {
