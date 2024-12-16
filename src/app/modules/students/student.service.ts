@@ -22,7 +22,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
   });
-  const excludedFields = ['searchTerm', 'sort'];
+  const excludedFields = ['searchTerm', 'sort' , 'limit' , 'page'];
   excludedFields.forEach((field) => delete queryObj[field]);
 
   const filterQuery = searchQuery
@@ -41,11 +41,22 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const sortQuery =  filterQuery.sort(sort);
 
   let limit = 1;
+  let page = 1;
+  let skip = 0;
 
   if (query?.limit) {
     limit = parseInt(query?.limit as string) ;
   }
-const limitQuery = await sortQuery.limit(limit);
+
+  if(query?.page){
+    page = parseInt(query?.page as string) ;
+    skip = (page - 1) * limit;
+  }
+  
+const paginateQuery =  sortQuery.skip(skip);
+const limitQuery = await paginateQuery.limit(limit);
+
+
 
   return limitQuery;
 };
