@@ -8,7 +8,8 @@ class QueryBuilder<T> {
     this.query = query;
   }
   search(searchableField: string[]) {
-    if (this?.query?.searchTerm) {
+    const searchTerm = this.query.searchTerm;
+    if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableField.map(
           (field) =>
@@ -20,5 +21,12 @@ class QueryBuilder<T> {
     }
     return this;
   }
- 
+  filter(){
+    const queryObj = this.query;
+    const excludedFields = ['searchTerm', 'sort' , 'limit' , 'page' , 'fields'];
+    excludedFields.forEach(field => delete queryObj[field]);
+    this.modelQuery = this.modelQuery.find(queryObj);
+    return this;
+  }
+
 }
