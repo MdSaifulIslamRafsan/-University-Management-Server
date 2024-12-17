@@ -37,9 +37,24 @@ const deleteCourseFromDB = async (id: string) => {
   return result;
 };
 
+const updateCourseFromDB = async(id : string , payload : Partial<TCourse>) => {
+const {preRequisiteCourse , ...courseRemainingData} = payload;
+
+// step-1: basic course info update
+
+const updateBasicCourseInfo = await Course.findByIdAndUpdate(id, courseRemainingData, {
+    new: true,
+    runValidators: true
+})
+
+return updateBasicCourseInfo
+
+}
+
 export const courseService = {
   createCourseIntoDB,
   getAllCoursesFromDB,
   getSingleCourseFromDB,
   deleteCourseFromDB,
+  updateCourseFromDB
 };
