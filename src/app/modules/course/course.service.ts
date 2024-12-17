@@ -47,7 +47,7 @@ const updateBasicCourseInfo = await Course.findByIdAndUpdate(id, courseRemaining
     runValidators: true
 })
 
-// step-2: update preRequisite course
+// step-2: delete preRequisite course
 if(preRequisiteCourse && preRequisiteCourse.length > 0){
     const deletedPreRequisite = preRequisiteCourse.filter(item => item?.course && item?.isDeleted).map(el => el.course)
 
@@ -57,6 +57,13 @@ if(preRequisiteCourse && preRequisiteCourse.length > 0){
         new: true
     })
     
+}
+
+// step-3: update new preRequisite course
+if(preRequisiteCourse && preRequisiteCourse.length > 0){
+    const newPreRequisite = preRequisiteCourse.filter(item => item.course && !item.isDeleted).map(item => item.course)
+   
+    const newPreRequisiteCourse = await Course.findByIdAndUpdate(id, {$push : {preRequisiteCourse : {course : newPreRequisite}}})
 }
 
 
