@@ -1,7 +1,6 @@
 import { TCourse } from './course.interface';
 import Course from './course.model';
 import QueryBuilder from './../../builder/QueryBuilder';
-import { query } from 'express';
 import { CourseSearchableFields } from './course.constant';
 
 const createCourseIntoDB = async (payload: TCourse) => {
@@ -10,7 +9,10 @@ const createCourseIntoDB = async (payload: TCourse) => {
 };
 
 const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
-  const courseQuery = new QueryBuilder(Course.find({}).populate('preRequisiteCourse.course'), query)
+  const courseQuery = new QueryBuilder(
+    Course.find({}).populate('preRequisiteCourse.course'),
+    query,
+  )
     .search(CourseSearchableFields)
     .filter()
     .sort()
@@ -20,7 +22,9 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 const getSingleCourseFromDB = async (id: string) => {
-  const result = await Course.findById(id);
+  const result = await Course.findById(id).populate(
+    'preRequisiteCourse.course',
+  );
   return result;
 };
 

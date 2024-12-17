@@ -10,10 +10,13 @@ const createCourseValidation = z.object({
     prefix: z.string(),
     code: z.number(),
     credits: z.number(),
-    preRequisiteCourses: z.array(preRequisiteCoursesValidation),
+    preRequisiteCourses: z.array(preRequisiteCoursesValidation).optional(),
+    isDeleted : z.boolean().optional()
   }),
 });
 
+const updateCourseValidation = createCourseValidation.partial();
 export const courseValidation = {
     createCourseValidation,
+    updateCourseValidation
 };

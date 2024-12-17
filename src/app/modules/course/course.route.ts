@@ -10,4 +10,5 @@ router.get('/:id', courseController.getSingleCourse);
 router.delete('/:id', courseController.deleteCourse)
 
 
+
 export const courseRoutes = router;
