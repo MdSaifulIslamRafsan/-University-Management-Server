@@ -10,9 +10,13 @@ const getAllCoursesFromDB = async() => {
     const result = await Course.find({});
     return result;
 }
-
+const getSingleCourseFromDB = async(id : string) => {
+    const result = await Course.findById(id);
+    return result;
+}
 
 export const courseService = {
     createCourseIntoDB,
-    getAllCoursesFromDB
+    getAllCoursesFromDB,
+    getSingleCourseFromDB
 }

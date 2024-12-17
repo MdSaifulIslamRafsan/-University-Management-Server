@@ -24,8 +24,20 @@ const getAllCourses = catchAsync( async(req , res)=>{
     });
 })
 
+const getSingleCourse = catchAsync(async (req , res)=>{
+    const {id} = req.params;
+    const result = await courseService.getSingleCourseFromDB(id);
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Course retrieved successfully",
+        data: result
+    })
+})
+
 
 export const courseController = {
     createCourse,
-    getAllCourses
+    getAllCourses,
+    getSingleCourse
 }
