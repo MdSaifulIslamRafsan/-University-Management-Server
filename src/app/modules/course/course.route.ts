@@ -9,6 +9,8 @@ router.get('/', courseController.getAllCourses);
 router.get('/:id', courseController.getSingleCourse);
 router.delete('/:id', courseController.deleteCourse)
 router.patch('/:id', validateRequest(courseValidation.updateCourseValidation), courseController.updateCourse)
-router.put('/:courseId/assign-faculty' , validateRequest(courseValidation.facultyCoursesValidation) , courseController.assignFaculties)
+router.put('/:courseId/assign-faculty' , validateRequest(courseValidation.facultyCoursesValidation) , courseController.assignFaculties);
+
+router.delete('/:courseId/remove-faculty',  validateRequest(courseValidation.facultyCoursesValidation) , courseController.deleteFacultiesCourse)
 
 export const courseRoutes = router;

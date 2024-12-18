@@ -18,8 +18,9 @@ const connectDB = async () => {
 };
 connectDB();
 
-process.on('unhandledRejection', () => {
-  console.log('🚨 Unhandled rejection, exiting now...');
+process.on('unhandledRejection', (error) => {
+
+  console.log('🚨 Unhandled rejection, exiting now...', error);
   if (server) {
     server.close(() => {
       process.exit(1);

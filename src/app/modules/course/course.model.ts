@@ -10,6 +10,9 @@ const preRequisiteCourseSchema = new Schema<TPreRequisiteCourse>({
     type: Boolean,
     default: false,
   },
+},
+{
+  _id :  false
 });
 
 

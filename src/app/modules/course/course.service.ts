@@ -55,9 +55,9 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
       id,
       courseRemainingData,
       {
-        session,
         new: true,
         runValidators: true,
+        session,
       },
     );
     if (!updateBasicCourseInfo) {
@@ -80,7 +80,7 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
             preRequisiteCourse: { course: { $in: deletedPreRequisite } },
           },
         },
-        { session, validateRequest: true, new: true },
+        { validateRequest: true, new: true, session },
       );
 
       if (!deletedPreRequisiteCourses) {
@@ -94,7 +94,7 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
       const newPreRequisite = preRequisiteCourse.filter(
         (item) => item.course && !item.isDeleted,
       );
-
+      console.log(newPreRequisite);
       const newPreRequisiteCourse = await Course.findByIdAndUpdate(
         id,
         {
@@ -102,7 +102,6 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
         },
         {
           new: true,
-          upsert: true,
           runValidators: true,
           session,
         },
@@ -113,17 +112,17 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
           'Failed to update preRequisite course.',
         );
       }
+
+      await session.commitTransaction();
+      await session.endSession();
       const result = await Course.findById(id).populate(
         'preRequisiteCourse.course',
       );
-
-      session.commitTransaction();
-      session.endSession();
       return result;
     }
   } catch (error) {
-    session.abortTransaction();
-    session.endSession();
+    await session.abortTransaction();
+    await session.endSession();
 
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -139,12 +138,30 @@ const assignFacultiesWithCourseIntoDB = async (
   const result = await CourseFaculty.findByIdAndUpdate(
     id,
     {
-      $addToSet: { faculty: { $each: payload } },
+      course: id,
+      $addToSet: { faculties: { $each: payload } },
     },
     {
       upsert: true,
       new: true,
     },
+  );
+  return result;
+};
+
+const deleteFacultiesCourseFromDB = async (
+  id: string,
+  payload: Partial<TCourseFaculties>,
+) => {
+  console.log(payload)
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      $pull: {
+        faculties: { $in: payload },
+      },
+    },
+    { new: true },
   );
   return result;
 };
@@ -156,4 +173,5 @@ export const courseService = {
   deleteCourseFromDB,
   updateCourseFromDB,
   assignFacultiesWithCourseIntoDB,
+  deleteFacultiesCourseFromDB,
 };
