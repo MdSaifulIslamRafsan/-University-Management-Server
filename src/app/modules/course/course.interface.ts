@@ -14,3 +14,8 @@ export interface TCourse {
     preRequisiteCourse : [TPreRequisiteCourse];
 
 }
+
+export interface TCourseFaculties {
+    course : Types.ObjectId,
+    faculty : [Types.ObjectId],
+}

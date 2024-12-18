@@ -45,6 +45,17 @@ const deleteCourse = catchAsync( async (req , res) => {
         data: result
     })
 })
+const assignFaculties = catchAsync( async (req , res) => {
+    const {courseId} = req.params;
+    const {faculties} = req.body;
+    const result = await courseService.(courseId , faculties);
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Course deleted successfully",
+        data: result
+    })
+})
 
 const updateCourse = catchAsync(async (req , res) => {
     const {id} = req.params;
