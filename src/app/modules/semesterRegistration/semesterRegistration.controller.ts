@@ -13,7 +13,7 @@ const createSemesterRegistration = catchAsync( async(req , res)=>{
     sendResponse(res , {
         success : true ,
         statusCode : StatusCodes.CREATED,
-        message : 'Registration successful' ,
+        message : 'semester registration successful' ,
         data : result  
        
     })
@@ -21,6 +21,19 @@ const createSemesterRegistration = catchAsync( async(req , res)=>{
 
 })
 
+const getSemesterRegistrationById = catchAsync( async(req , res)=>{
+    const result = await SemesterRegistrationService.getSemesterRegistrationFromDB(req.params)
+
+    sendResponse(res , {
+        success : true ,
+        statusCode : StatusCodes.OK,
+        message : 'get semester registration successfully' ,
+        data : result  
+       
+    })
+})
+
 export const SemesterRegistrationController = {
-    createSemesterRegistration
+    createSemesterRegistration,
+    getSemesterRegistrationById
 }

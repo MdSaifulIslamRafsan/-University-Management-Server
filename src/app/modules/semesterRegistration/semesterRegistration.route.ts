@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.post('/' , validateRequest(semesterRegisterValidation.createSemesterRegistrationValidation), SemesterRegistrationController.createSemesterRegistration)
+router.get('/', SemesterRegistrationController.getSemesterRegistrationById)
 
 
-
-export const SemesterRegistration = router;
+export const SemesterRegistrationRoutes = router;
