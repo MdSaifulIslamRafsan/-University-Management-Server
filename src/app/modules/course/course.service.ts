@@ -153,7 +153,6 @@ const deleteFacultiesCourseFromDB = async (
   id: string,
   payload: Partial<TCourseFaculties>,
 ) => {
-  console.log(payload)
   const result = await CourseFaculty.findByIdAndUpdate(
     id,
     {
