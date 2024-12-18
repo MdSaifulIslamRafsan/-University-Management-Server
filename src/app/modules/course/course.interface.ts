@@ -17,5 +17,5 @@ export interface TCourse {
 
 export interface TCourseFaculties {
     course : Types.ObjectId,
-    faculty : [Types.ObjectId],
+    faculties : [Types.ObjectId],
 }
