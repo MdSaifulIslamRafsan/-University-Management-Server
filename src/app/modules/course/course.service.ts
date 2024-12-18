@@ -1,10 +1,11 @@
-import { TCourse } from './course.interface';
-import Course from './course.model';
+import { TCourse, TCourseFaculties } from './course.interface';
+
 import QueryBuilder from './../../builder/QueryBuilder';
 import { CourseSearchableFields } from './course.constant';
 import mongoose from 'mongoose';
 import AppError from '../../errors/AppErrors';
 import { StatusCodes } from 'http-status-codes';
+import { Course } from './course.model';
 
 const createCourseIntoDB = async (payload: TCourse) => {
   const result = await Course.create(payload);
@@ -130,8 +131,8 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
   }
 };
 
-const assignFacultiesIntoDB = async(id : string , payload : Record<string, unknown>) => {
-
+const assignFacultiesIntoDB = async(id : string , payload : TCourseFaculties) => {
+    
 }
 
 export const courseService = {
@@ -140,4 +141,5 @@ export const courseService = {
   getSingleCourseFromDB,
   deleteCourseFromDB,
   updateCourseFromDB,
+  assignFacultiesIntoDB
 };
