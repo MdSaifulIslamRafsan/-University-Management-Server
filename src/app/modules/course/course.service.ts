@@ -94,7 +94,6 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
       const newPreRequisite = preRequisiteCourse.filter(
         (item) => item.course && !item.isDeleted,
       );
-      console.log(newPreRequisite);
       const newPreRequisiteCourse = await Course.findByIdAndUpdate(
         id,
         {

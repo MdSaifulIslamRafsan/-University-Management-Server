@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { SemesterRegistrationService } from "./semesterRegistration.service";
 
 
+
 const createSemesterRegistration = catchAsync( async(req , res)=>{
 
     const body = req.body ;
@@ -27,13 +28,27 @@ const getSemesterRegistrationById = catchAsync( async(req , res)=>{
     sendResponse(res , {
         success : true ,
         statusCode : StatusCodes.OK,
-        message : 'get semester registration successfully' ,
+        message : 'get all semester registration successfully' ,
         data : result  
        
     })
 })
 
+const getSingleRegistration = catchAsync(async(req , res) => {
+
+    const {id} = req.params;
+    const result = await SemesterRegistrationService.getSingleSemesterRegistration(id);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'get semester registration successfully',
+        data: result
+    })
+})
+
 export const SemesterRegistrationController = {
     createSemesterRegistration,
-    getSemesterRegistrationById
+    getSemesterRegistrationById,
+    getSingleRegistration
 }
