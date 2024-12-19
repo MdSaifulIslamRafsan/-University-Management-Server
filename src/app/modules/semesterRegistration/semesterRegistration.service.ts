@@ -59,13 +59,31 @@ const getSemesterRegistrationFromDB = async (
   return result;
 };
 
-const getSingleSemesterRegistration = async (id: string) => {
+const getSingleSemesterRegistrationFromDB = async (id: string) => {
   const result = await SemesterRegistration.findById(id);
   return result;
 };
 
+const updateSemesterRegistrationFromDB = async (
+  id: string,
+  payload: Partial<TSemesterRegistration>,
+) => {
+
+  const isEnded = await SemesterRegistration.findById(id, {status: 'ENDED'})
+  if(!isEnded?._id){
+    throw new AppError(StatusCodes.NOT_FOUND, 'Semester Registration Not Found')
+  }
+  if(isEnded){
+    throw new AppError(StatusCodes.FORBIDDEN, 'Semester Registration is Ended')
+  }
+
+  const result = await SemesterRegistration.findByIdAndUpdate(id, payload , {new : true})
+  return result;
+}
+
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,
   getSemesterRegistrationFromDB,
-  getSingleSemesterRegistration,
+  getSingleSemesterRegistrationFromDB,
+  updateSemesterRegistrationFromDB
 };
