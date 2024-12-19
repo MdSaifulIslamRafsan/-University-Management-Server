@@ -69,12 +69,24 @@ const updateSemesterRegistrationFromDB = async (
   payload: Partial<TSemesterRegistration>,
 ) => {
 
-  const isEnded = await SemesterRegistration.findById(id, {status: 'ENDED'})
-  if(!isEnded?._id){
+  const isSemesterRegistrationExist = await SemesterRegistration.findById(id)
+
+  const currentSemesterStatus = isSemesterRegistrationExist?.status;
+  const requestStatus = payload?.status
+
+  if(!isSemesterRegistrationExist){
     throw new AppError(StatusCodes.NOT_FOUND, 'Semester Registration Not Found')
   }
-  if(isEnded){
+  if(currentSemesterStatus === "ENDED"){
     throw new AppError(StatusCodes.FORBIDDEN, 'Semester Registration is Ended')
+  }
+  if(currentSemesterStatus === "UPCOMING" && requestStatus  === "ENDED"){
+    throw new AppError(StatusCodes.FORBIDDEN, `You Cannot directly change status from ${currentSemesterStatus} to ${requestStatus}`)
+  
+  }
+  if(currentSemesterStatus === "ONGOING" && requestStatus  === "UPCOMING"){
+    throw new AppError(StatusCodes.FORBIDDEN, `You Cannot directly change status from ${currentSemesterStatus} to ${requestStatus}`)
+  
   }
 
   const result = await SemesterRegistration.findByIdAndUpdate(id, payload , {new : true})
