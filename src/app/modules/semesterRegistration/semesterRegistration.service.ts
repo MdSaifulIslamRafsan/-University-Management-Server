@@ -4,6 +4,7 @@ import AcademicSemester from '../academicSemester/academicSemester.model';
 import { TSemesterRegistration } from './semesterRegistration.interface';
 import SemesterRegistration from './semesterRegistration.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { RegistrationStatus } from './semesterRegistration.constant';
 
 const createSemesterRegistrationIntoDB = async (
   payload: TSemesterRegistration,
@@ -68,34 +69,43 @@ const updateSemesterRegistrationFromDB = async (
   id: string,
   payload: Partial<TSemesterRegistration>,
 ) => {
-
-  const isSemesterRegistrationExist = await SemesterRegistration.findById(id)
+  const isSemesterRegistrationExist = await SemesterRegistration.findById(id);
 
   const currentSemesterStatus = isSemesterRegistrationExist?.status;
-  const requestStatus = payload?.status
+  const requestStatus = payload?.status;
 
-  if(!isSemesterRegistrationExist){
-    throw new AppError(StatusCodes.NOT_FOUND, 'Semester Registration Not Found')
+  if (!isSemesterRegistrationExist) {
+    throw new AppError(
+      StatusCodes.NOT_FOUND,
+      'Semester Registration Not Found',
+    );
   }
-  if(currentSemesterStatus === "ENDED"){
-    throw new AppError(StatusCodes.FORBIDDEN, 'Semester Registration is Ended')
+  if (currentSemesterStatus === RegistrationStatus.ENDED) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'Semester Registration is Ended');
   }
-  if(currentSemesterStatus === "UPCOMING" && requestStatus  === "ENDED"){
-    throw new AppError(StatusCodes.FORBIDDEN, `You Cannot directly change status from ${currentSemesterStatus} to ${requestStatus}`)
-  
+  if (currentSemesterStatus === RegistrationStatus.UPCOMING  && requestStatus === RegistrationStatus.ENDED) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      `You Cannot directly change status from ${currentSemesterStatus} to ${requestStatus}`,
+    );
   }
-  if(currentSemesterStatus === "ONGOING" && requestStatus  === "UPCOMING"){
-    throw new AppError(StatusCodes.FORBIDDEN, `You Cannot directly change status from ${currentSemesterStatus} to ${requestStatus}`)
-  
+  if (currentSemesterStatus === RegistrationStatus.ONGOING && requestStatus === RegistrationStatus.UPCOMING) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      `You Cannot directly change status from ${currentSemesterStatus} to ${requestStatus}`,
+    );
   }
 
-  const result = await SemesterRegistration.findByIdAndUpdate(id, payload , {new : true})
+  const result = await SemesterRegistration.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
   return result;
-}
+};
 
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,
   getSemesterRegistrationFromDB,
   getSingleSemesterRegistrationFromDB,
-  updateSemesterRegistrationFromDB
+  updateSemesterRegistrationFromDB,
 };
