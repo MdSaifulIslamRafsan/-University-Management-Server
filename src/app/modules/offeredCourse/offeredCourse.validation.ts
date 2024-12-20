@@ -11,8 +11,24 @@ const createOfferedCourseValidation = z.object({
         faculty : z.string(),
         maxCapacity : z.number(),
         days : z.array(z.enum([...Days] as [string, ...string[]])),
-        startTime : z.string(),
-        endTime : z.string(),
+        startTime : z.string().refine((time) => {
+            const regex = /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/
+            return regex.test(time);
+        },{
+            message: 'Invalid time format. Expected HH:MM'
+        }),
+        endTime : z.string().refine((time) => {
+            const regex = /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/
+            return regex.test(time);
+        },{
+            message: 'Invalid time format. Expected HH:MM'
+        }),
+    }).refine((body) => {
+        const start = new Date(`1970-01-01T${body.startTime}:00`);
+        const end = new Date(`1970-01-01T${body.endTime}:00`);
+        return start < end;
+    },{
+        message: 'Start time must be before end time'
     })
 });
 
