@@ -13,48 +13,51 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     academicFaculty,
     academicDepartment,
     course,
-    section
+    section,
+    days,
+    startTime,
+    endTime,
     // faculty,
   } = payload;
 
   // check if the semester registration is exists
-  const isSemesterRegistrationExists = await SemesterRegistration.findById(
-    semesterRegistration
-  );
+  const isSemesterRegistrationExists =
+    await SemesterRegistration.findById(semesterRegistration);
 
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      StatusCodes.NOT_FOUND,
+      'Semester registration not found',
+    );
+  }
 
+  const academicSemester = isSemesterRegistrationExists.academicSemester;
 
-  
-if(!isSemesterRegistrationExists){
-    throw new AppError(StatusCodes.NOT_FOUND , 'Semester registration not found');
-}
-
-const academicSemester = isSemesterRegistrationExists.academicSemester
-
-
-// check if the academic faculty is exists
-    const isAcademicFacultyExists = await AcademicFaculty.findById(academicFaculty);
-    if (!isAcademicFacultyExists) {
+  // check if the academic faculty is exists
+  const isAcademicFacultyExists =
+    await AcademicFaculty.findById(academicFaculty);
+  if (!isAcademicFacultyExists) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Academic faculty not found');
   }
 
-//   check if the academic department is exists
+  //   check if the academic department is exists
 
-const isAcademicDepartmentExists =  await AcademicDepartment.findById(academicDepartment);
+  const isAcademicDepartmentExists =
+    await AcademicDepartment.findById(academicDepartment);
 
-if (!isAcademicDepartmentExists) {
+  if (!isAcademicDepartmentExists) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Academic department not found');
-}
+  }
 
-// check if the course is exists
+  // check if the course is exists
 
-const isCourseExists = await Course.findById(course);
+  const isCourseExists = await Course.findById(course);
 
-if (!isCourseExists) {
+  if (!isCourseExists) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Course not found');
-}
+  }
 
-/* // check if the faculty is exists
+  /* // check if the faculty is exists
 
 const isFacultyExists = await AcademicFaculty.findById(faculty);
 
@@ -62,32 +65,60 @@ if (!isFacultyExists) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Faculty not found');
 } */
 
-    //   check if the academic department is belongs to the academic faculty 
+  //   check if the academic department is belongs to the academic faculty
 
-    const isDepartmentBelongsToFaculty = AcademicDepartment.findOne({
-        _id : academicDepartment,
-        academicFaculty,
-    })
+  const isDepartmentBelongsToFaculty = AcademicDepartment.findOne({
+    _id: academicDepartment,
+    academicFaculty,
+  });
 
+  if (!isDepartmentBelongsToFaculty) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      `This ${isAcademicDepartmentExists.name} is not belongs to ${isAcademicFacultyExists.name} }`,
+    );
+  }
 
-    if(!isDepartmentBelongsToFaculty){
-        throw new AppError(StatusCodes.FORBIDDEN, `This ${isAcademicDepartmentExists.name} is not belongs to ${isAcademicFacultyExists.name} }`);
+  // check if the same offered course same section in same registrar semester exists
+
+  const isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameCourse =
+    await OfferedCourse.findOne({
+      semesterRegistration,
+      course,
+      section,
+    });
+  if (isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameCourse) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      'Same offered course same section in same registrar semester exists',
+    );
+  }
+
+  // get the schedules of the faculties
+  const assignSchedules = await OfferedCourse.find({
+    semesterRegistration,
+    days : {$in : days},
+    // faculty
+  }).select('days , startTime, endTime');
+
+  const newSchedules = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  assignSchedules.forEach((schedule) => {
+    const existingStartTime = new Date(`1970-01-01T${schedule.startTime}`);
+    const existingEndTime = new Date(`1970-01-01T${schedule.endTime}`);
+    const newStartTime = new Date(`1970-01-01T${newSchedules.startTime}`);
+    const newEndTime = new Date(`1970-01-01T${newSchedules.endTime}`);
+
+    if(newStartTime < existingEndTime && newEndTime > existingStartTime){
+    throw new AppError(StatusCodes.CONFLICT, 'This faculty is not available at that time ! choose other time or date range'); 
     }
+  })
 
-    
-    // check if the same offered course same section in same registrar semester exists
-
-    const isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameCourse = await OfferedCourse.findOne({
-        semesterRegistration,
-        course,
-        section
-    })
-    if(isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameCourse){
-        throw new AppError(StatusCodes.CONFLICT, 'Same offered course same section in same registrar semester exists');
-    }
-
-
-  const result = await OfferedCourse.create({...payload, academicSemester});
+  const result = await OfferedCourse.create({ ...payload, academicSemester });
   return result;
 };
 
