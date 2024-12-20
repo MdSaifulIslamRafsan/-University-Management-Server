@@ -21,6 +21,8 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     semesterRegistration
   );
 
+
+
   
 if(!isSemesterRegistrationExists){
     throw new AppError(StatusCodes.NOT_FOUND , 'Semester registration not found');
@@ -58,6 +60,17 @@ const isFacultyExists = await AcademicFaculty.findById(faculty);
 if (!isFacultyExists) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Faculty not found');
 } */
+
+    //   check if the academic department is belongs to the academic faculty 
+
+    const isDepartmentBelongsToFaculty = AcademicDepartment.findOne({
+        academicFaculty,
+        academicDepartment
+    })
+
+    if(!isDepartmentBelongsToFaculty){
+        throw new AppError(StatusCodes.FORBIDDEN, `This ${isAcademicDepartmentExists.name} is not belongs to ${isAcademicFacultyExists.name} }`);
+    }
 
 
   const result = await OfferedCourse.create({...payload, academicSemester});
