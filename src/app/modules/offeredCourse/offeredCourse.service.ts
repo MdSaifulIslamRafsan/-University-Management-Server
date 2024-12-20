@@ -13,6 +13,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     academicFaculty,
     academicDepartment,
     course,
+    section
     // faculty,
   } = payload;
 
@@ -64,12 +65,25 @@ if (!isFacultyExists) {
     //   check if the academic department is belongs to the academic faculty 
 
     const isDepartmentBelongsToFaculty = AcademicDepartment.findOne({
+        _id : academicDepartment,
         academicFaculty,
-        academicDepartment
     })
+
 
     if(!isDepartmentBelongsToFaculty){
         throw new AppError(StatusCodes.FORBIDDEN, `This ${isAcademicDepartmentExists.name} is not belongs to ${isAcademicFacultyExists.name} }`);
+    }
+
+    
+    // check if the same offered course same section in same registrar semester exists
+
+    const isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameCourse = await OfferedCourse.findOne({
+        semesterRegistration,
+        course,
+        section
+    })
+    if(isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameCourse){
+        throw new AppError(StatusCodes.CONFLICT, 'Same offered course same section in same registrar semester exists');
     }
 
 
