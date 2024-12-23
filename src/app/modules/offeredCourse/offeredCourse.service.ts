@@ -98,7 +98,7 @@ if (!isFacultyExists) {
   // get the schedules of the faculties
   const assignSchedules = await OfferedCourse.find({
     semesterRegistration,
-    days : {$in : days},
+    days: { $in: days },
     // faculty
   }).select('days , startTime, endTime');
 
@@ -108,15 +108,71 @@ if (!isFacultyExists) {
     endTime,
   };
 
-  if(hasTimeConflict(assignSchedules , newSchedules)){
-    throw new AppError(StatusCodes.CONFLICT, 'This faculty is not available at that time ! choose other time or date range'); 
+  if (hasTimeConflict(assignSchedules, newSchedules)) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      'This faculty is not available at that time ! choose other time or date range',
+    );
   }
 
-  
   const result = await OfferedCourse.create({ ...payload, academicSemester });
+  return result;
+};
+
+const updateOfferedCourseFromDB = async (
+  id: string,
+  payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>,
+) => {
+  const { faculty, days, startTime, endTime } = payload;
+
+  const isOfferedCourseExists = await OfferedCourse.findById(id);
+  if (!isOfferedCourseExists) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Offered course not found');
+  }
+
+  /*  const isExistFaculty = await Faculty.findById(faculty)
+
+  if(!isExistFaculty){
+    throw new AppError(StatusCodes.NOT_FOUND, 'Faculty not found');
+  } */
+
+  const semesterRegistration = isOfferedCourseExists.
+  semesterRegistration;
+
+  const semesterRegistrationStatus = await SemesterRegistration.findById(semesterRegistration);
+
+  if(semesterRegistrationStatus?.status !== "UPCOMING"){
+    throw new AppError(StatusCodes.FORBIDDEN, "The semester registration is not in 'UPCOMING' status. You can't update the offered course.");
+  }
+
+
+  // get the schedules of the faculties
+  const assignSchedules = await OfferedCourse.find({
+    semesterRegistration,
+    days: { $in: days },
+    // faculty
+  }).select('days , startTime, endTime');
+
+  const newSchedules = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  if (hasTimeConflict(assignSchedules, newSchedules)) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      'This faculty is not available at that time ! choose other time or date range',
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
   return result;
 };
 
 export const OfferedCourseService = {
   createOfferedCourseIntoDB,
+  updateOfferedCourseFromDB,
 };
