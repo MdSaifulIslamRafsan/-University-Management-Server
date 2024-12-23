@@ -1,1 +1,5 @@
-export const studentSearchAbelQuery = ['email', 'name.firstName', 'presentAddress'];
+export const studentSearchAbelQuery = [
+  'email',
+  'name.firstName',
+  'presentAddress',
+];
