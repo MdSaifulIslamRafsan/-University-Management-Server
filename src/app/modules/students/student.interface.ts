@@ -21,6 +21,7 @@ export type TLocalGuardian = {
   contactNo: string;
   address: string;
 };
+export type TBloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
 
 export type TStudent = {
   id: string;
@@ -34,7 +35,7 @@ export type TStudent = {
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodGroup?: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
   guardian: TGuardian;
