@@ -5,7 +5,7 @@ export type TAdminUserName = {
   middleName?: string;
   lastName: string;
 };
-type TAdminGender = 'male' | 'female' | 'other';
+export type TAdminGender = 'male' | 'female' | 'other';
 export type TAdminBloodGroup =
   | 'A+'
   | 'A-'

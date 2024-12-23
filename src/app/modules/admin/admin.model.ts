@@ -1,6 +1,6 @@
-import { Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import { TAdmin, TAdminUserName } from './admin.interface';
-import { bloodGroup } from './admin.constant';
+import { bloodGroup, Gender } from './admin.constant';
 
 const userNameSchema = new Schema<TAdminUserName>({
   firstName: {
@@ -40,8 +40,49 @@ const adminSchema = new Schema<TAdmin>({
     type: userNameSchema,
     required: true,
   },
-  bloodGroup : {
+  bloodGroup: {
     type: String,
     enum: bloodGroup,
+  },
+  gender: {
+    type: String,
+    enum: Gender,
+    required: true,
+  },
+  dateOfBirth : {
+    type : Date
+  },
+  email : {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  contactNo : {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  emergencyContactNo:{
+    type: String,
+    required: true,
+    unique: true,
+  },
+  presentAddress : {
+    type: String,
+    required: true,
+  },
+  permanentAddress: {
+    type: String,
+    required: true,
+  },
+  profileImg: { type: String },
+  isDeleted : {
+    type: Boolean,
+    default: false,
   }
+
+
 });
+
+const Admin = model<TAdmin>('admin', adminSchema);
+export default Admin;
