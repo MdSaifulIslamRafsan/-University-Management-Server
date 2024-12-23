@@ -1,12 +1,12 @@
 import { Types } from 'mongoose';
 
-export type TUserName = {
+export type TAdminUserName = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
-type TGender = 'male' | 'female' | 'other';
-export type TBloodGroup =
+type TAdminGender = 'male' | 'female' | 'other';
+export type TAdminBloodGroup =
   | 'A+'
   | 'A-'
   | 'B+'
@@ -20,9 +20,9 @@ export interface TAdmin {
   id: string;
   user: Types.ObjectId;
   designation: string;
-  name: TUserName;
-  gender: TGender;
-  bloodGroup?: TBloodGroup;
+  name: TAdminUserName;
+  gender: TAdminGender;
+  bloodGroup?: TAdminBloodGroup;
   dateOfBirth?: Date;
   email: string;
   contactNo: string;
