@@ -81,7 +81,11 @@ userSchema.pre('save', async function (next) {
   userSchema.static('isUserExistByCustomId', async function isUserExistByCustomId(id: string) {
     const existingUser = await User.findOne({id});
     return existingUser;
-  })
+  });
+
+  userSchema.statics.isValidPassword = async function (password: string , hashPassword: string){
+    return await bcrypt.compare(password, hashPassword);
+  }
 
 const User = model<TUser, UserModel>('User', userSchema);
 export default User;

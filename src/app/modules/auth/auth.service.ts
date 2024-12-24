@@ -2,13 +2,14 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppErrors';
 import User from '../user/user.model';
 import { TLoginUser } from './auth.interface';
-import bcrypt from 'bcrypt';
 const loginUserFromDB = async (payload: TLoginUser) => {
   const { id, password } = payload;
 
   // const isUserExist = await User.findOne({id});
+  const user = await User.isUserExistByCustomId(id);
+  console.log(user)
 
-  if (!(await User.isUserExistByCustomId(id))) {
+  if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
   /*  const isDeleted = isUserExist?.isDeleted
@@ -21,12 +22,11 @@ const loginUserFromDB = async (payload: TLoginUser) => {
         throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked')
     } */
 
-  /*  const isValidPassword = bcrypt.compareSync(password, isUserExist.password);
+  //  const isValidPassword = bcrypt.compareSync(password, isUserExist.password);
 
-    if(!isValidPassword){
-        throw new AppError(StatusCodes.FORBIDDEN, 'Invalid password')
-    } */
-  
+  if (!await User.isValidPassword(password , user?.password)){
+    throw new AppError(StatusCodes.FORBIDDEN, 'Invalid password');
+  }
 
   return {};
 };
