@@ -7,6 +7,7 @@ const loginUserValidation = z.object({
   }),
 });
 
+
 export const AuthValidation = {
   loginUserValidation,
 };

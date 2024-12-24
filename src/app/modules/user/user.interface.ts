@@ -12,6 +12,7 @@ export interface TUser {
 export interface UserModel extends Model<TUser>{
     isUserExistByCustomId(id: string): Promise<TUser>
     isValidPassword(password: string , hashPassword: string): Promise<boolean>
+    isDeleted(id: string) : Promise<TUser>
 }
 
 /* export interface TNewUser {

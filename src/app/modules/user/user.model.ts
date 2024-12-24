@@ -83,6 +83,10 @@ userSchema.pre('save', async function (next) {
     return existingUser;
   });
 
+  userSchema.statics.isDeleted = async function(id : string){
+    return await User.findOne({id ,isDeleted : true})
+  }
+
   userSchema.statics.isValidPassword = async function (password: string , hashPassword: string){
     return await bcrypt.compare(password, hashPassword);
   }
