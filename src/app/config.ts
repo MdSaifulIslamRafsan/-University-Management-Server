@@ -7,6 +7,7 @@ export default {
     NODE_ENV : process.env.NODE_ENV,
     port : process.env.PORT,
     db_url : process.env.MONGO_DB_URL,
-    default_password : process.env.DEFAULT_PASSWORD
+    default_password : process.env.DEFAULT_PASSWORD,
+    access_token : process.env.ACCESS_TOKEN
 }
 

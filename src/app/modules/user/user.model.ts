@@ -60,10 +60,10 @@ userSchema.pre('save', async function (next) {
     next();
   });
   
-  userSchema.pre('findOne', function (next) {
+ /*  userSchema.pre('findOne', function (next) {
     this.find({ isDeleted: { $ne: true } });
     next();
-  });
+  }); */
   
   // [ {$match: { isDeleted : {  $ne: : true}}}   ,{ '$match': { id: '123456' } } ]
   
@@ -86,6 +86,10 @@ userSchema.pre('save', async function (next) {
   userSchema.statics.isDeleted = async function(id : string){
     return await User.findOne({id ,isDeleted : true})
   }
+
+  userSchema.static('isUserBlocked', async function isUserBlocked(id: string){
+    return await User.findOne({id, status : 'blocked'})
+  })
 
   userSchema.statics.isValidPassword = async function (password: string , hashPassword: string){
     return await bcrypt.compare(password, hashPassword);

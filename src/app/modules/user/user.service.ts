@@ -65,7 +65,7 @@ const session = await mongoose.startSession();
   } catch (error) {
     session.abortTransaction();
     session.endSession()
-    throw new AppError(StatusCodes.BAD_REQUEST, 'failed to create student')
+    throw new AppError(StatusCodes.BAD_REQUEST, `failed to create student ${error}`)
   }
 
 
