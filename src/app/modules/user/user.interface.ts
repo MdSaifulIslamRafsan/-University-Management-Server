@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import { UserRoles } from './user.constant';
 export interface TUser {
     id: string;
     password : string;
@@ -16,6 +17,8 @@ export interface UserModel extends Model<TUser>{
     isUserBlocked(id : string) : Promise<TUser>
 
 }
+
+export type TUserRoles =  keyof typeof UserRoles
 
 /* export interface TNewUser {
     role : string;
