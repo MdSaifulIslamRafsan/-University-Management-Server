@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { TUser } from "./user.interface";
+import { TUser, UserModel } from "./user.interface";
 import bcrypt from 'bcrypt';
 
 
- const userSchema = new Schema<TUser>({
+ const userSchema = new Schema<TUser , UserModel>({
     id: {
         type : String,
          required : true,
@@ -73,10 +73,15 @@ userSchema.pre('save', async function (next) {
   });
   
   //creating a custom static method
-  userSchema.statics.isUserExists = async function (id: string) {
+/*   userSchema.statics.isUserExistByCustomId = async function (id: string) {
     const existingUser = await User.findOne({ id });
     return existingUser;
-  };
+  }; */
 
-const User = model<TUser>('User', userSchema);
+  userSchema.static('isUserExistByCustomId', async function isUserExistByCustomId(id: string) {
+    const existingUser = await User.findOne({id});
+    return existingUser;
+  })
+
+const User = model<TUser, UserModel>('User', userSchema);
 export default User;

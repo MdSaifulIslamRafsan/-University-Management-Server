@@ -21,7 +21,7 @@ export const generatedStudentId =  async(payload : TAcademicSemester) =>{
     const lastStudentSemesterCode = lastStudentId?.substring(4,6);
     const currentSemesterYear = payload?.year;
     const currentSemesterCode = payload?.code;
-    console.log(payload);
+   
 
 
     if(lastStudentId && lastStudentSemesterYear === currentSemesterYear && lastStudentSemesterCode === currentSemesterCode ){
