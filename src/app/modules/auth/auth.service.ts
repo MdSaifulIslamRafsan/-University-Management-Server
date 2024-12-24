@@ -50,6 +50,12 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   };
 };
 
+const forgotPasswordIntoDB = async (userId :string , userRole : string, payload :  ) =>{
+
+}
+
+
 export const AuthService = {
   loginUserFromDB,
+  forgotPasswordIntoDB
 };
