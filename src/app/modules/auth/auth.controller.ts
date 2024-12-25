@@ -16,14 +16,13 @@ const loginUser = catchAsync(async (req, res) => {
 });
 
 const forgetPassword = catchAsync(async(req ,res)=>{
-  const {id , role} = req.user as JwtPayload;
 
-  const result = await AuthService.forgotPasswordIntoDB(id , role , req.body)
+  const result = await AuthService.forgotPasswordIntoDB(req.user as JwtPayload , req.body)
   sendResponse(res , {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'Password reset link sent',
-    data : null,
+    message: 'Password Updated successfully',
+    data : result,
   })
 })
 

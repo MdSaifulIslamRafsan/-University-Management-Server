@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 import config from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { TUserRoles } from '../modules/user/user.interface';
+import User from '../modules/user/user.model';
 
 const auth = (...RequiredRoles : TUserRoles[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +13,9 @@ const auth = (...RequiredRoles : TUserRoles[]) => {
     if (!token) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'Invalid authorization');
     }
-    jwt.verify(token, config.access_token as string, function (err, decoded) {
+
+    // 1st way
+   /*  jwt.verify(token, config.access_token as string, function (err, decoded) {
       if (err) {
         throw new AppError(StatusCodes.UNAUTHORIZED, 'Invalid credentials');
       }
@@ -24,7 +27,31 @@ const auth = (...RequiredRoles : TUserRoles[]) => {
       req.user = decoded as JwtPayload;
     //   req.user = decoded;
       next();
-    });
+    }); */
+
+    // 2nd way
+    const decoded = jwt.verify(token, config.access_token as string) as JwtPayload
+
+    const {role , id , iat} = decoded;
+    if(RequiredRoles && !RequiredRoles.includes(role)){
+      throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to access this resource');
+    }
+
+    
+
+
+
+
+
+    
+
+
+
+    req.user = decoded as JwtPayload
+    next();
+
+
+
   });
 };
 
