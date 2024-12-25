@@ -33,11 +33,27 @@ const auth = (...RequiredRoles : TUserRoles[]) => {
     const decoded = jwt.verify(token, config.access_token as string) as JwtPayload
 
     const {role , id , iat} = decoded;
+    
+    if (await User.isDeleted(id)) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
+    }
+    if(await User.isUserBlocked(id)){
+      throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
+    }
+    const user = await User.isUserExistByCustomId(id);
+
+   
+
+    if(user?.passwordChangeAt && await User.isJWTTokenIssuedBeforePassword(iat as number , user?.passwordChangeAt)){
+      throw new AppError(StatusCodes.FORBIDDEN, 'user token not valid');
+    }
+
+
+
     if(RequiredRoles && !RequiredRoles.includes(role)){
       throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized to access this resource');
     }
 
-    
 
 
 

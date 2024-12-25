@@ -25,7 +25,6 @@ const loginUserFromDB = async (payload: TLoginUser) => {
     } */
 
   //  const isValidPassword = bcrypt.compareSync(password, isUserExist.password);
-
   if (await User.isDeleted(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
@@ -62,6 +61,7 @@ const forgotPasswordIntoDB = async (
   if (!isUserExist) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
+
   if (await User.isDeleted(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
