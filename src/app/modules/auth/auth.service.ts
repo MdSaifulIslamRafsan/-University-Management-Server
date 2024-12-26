@@ -42,18 +42,26 @@ const loginUserFromDB = async (payload: TLoginUser) => {
     role: user.role,
   };
 
-  const accessToken = createJwtToken(jwtPayload, config.access_token as string , config.access_expires_in as string);
- 
-  const refreshToken = createJwtToken(jwtPayload, config.refresh_token as string , config.refresh_expires_in as string);
+  const accessToken = createJwtToken(
+    jwtPayload,
+    config.access_token as string,
+    config.access_expires_in as string,
+  );
+
+  const refreshToken = createJwtToken(
+    jwtPayload,
+    config.refresh_token as string,
+    config.refresh_expires_in as string,
+  );
 
   return {
     needsPasswordChange: user.needsPasswordChange,
     accessToken,
-    refreshToken
+    refreshToken,
   };
 };
 
-const forgotPasswordIntoDB = async (
+const resetPasswordIntoDB = async (
   user: JwtPayload,
   payload: TForgotPassword,
 ) => {
@@ -80,44 +88,86 @@ const forgotPasswordIntoDB = async (
 
   await User.findOneAndUpdate(
     { id, role },
-    { password: newPasswordHash, needsPasswordChange: false , passwordChangeAt: new Date() },
+    {
+      password: newPasswordHash,
+      needsPasswordChange: false,
+      passwordChangeAt: new Date(),
+    },
     { new: true },
   );
   return null;
 };
-const refreshTokenFromCookie =   async (refreshToken : string) => {
+const refreshTokenFromCookie = async (refreshToken: string) => {
+  const decoded = jwt.verify(
+    refreshToken,
+    config.refresh_token as string,
+  ) as JwtPayload;
 
-const decoded  = jwt.verify(refreshToken, config.refresh_token as string) as JwtPayload;
+  const { id, iat } = decoded;
+  const user = await User.isUserExistByCustomId(id);
+  if (!user) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
+  }
+  if (await User.isDeleted(id)) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
+  }
+  if (await User.isUserBlocked(id)) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
+  }
 
-const { id , iat} = decoded;
-const user = await User.isUserExistByCustomId(id);
-if(!user){
-  throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
-}
-if (await User.isDeleted(id)) {
-  throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
-}
-if(await User.isUserBlocked(id)){
-  throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
-}
-
-
-if(user?.passwordChangeAt && await User.isJWTTokenIssuedBeforePassword(iat as number , user?.passwordChangeAt)){
-  throw new AppError(StatusCodes.FORBIDDEN, 'user token not valid');
-}
-const jwtPayload = {
-  id: user.id,
-  role: user.role,
+  if (
+    user?.passwordChangeAt &&
+    (await User.isJWTTokenIssuedBeforePassword(
+      iat as number,
+      user?.passwordChangeAt,
+    ))
+  ) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'user token not valid');
+  }
+  const jwtPayload = {
+    id: user.id,
+    role: user.role,
+  };
+  const accessToken = createJwtToken(
+    jwtPayload,
+    config.access_token as string,
+    config.access_expires_in as string,
+  );
+  return {
+    accessToken,
+  };
 };
-const accessToken = createJwtToken(jwtPayload, config.access_token as string , config.access_expires_in as string);
-return {
-  accessToken,
-}
 
-}
+const forgotPasswordIntoDB = async (id: string) => {
+  const user = await User.isUserExistByCustomId(id);
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  if (await User.isDeleted(id)) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  if (await User.isUserBlocked(id)) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
+  }
+
+  const jwtPayload = {
+    id: user.id,
+    role: user.role,
+  };
+
+  const accessToken = createJwtToken(
+    jwtPayload,
+    config.access_token as string,
+    '5m',
+  );
+
+  const resetPasswordUrl = `https://localhost:3000?id=${user?.id}&token=${accessToken}`;
+  return resetPasswordUrl;
+};
 
 export const AuthService = {
   loginUserFromDB,
   forgotPasswordIntoDB,
-  refreshTokenFromCookie
+  resetPasswordIntoDB,
+  refreshTokenFromCookie,
 };

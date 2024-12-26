@@ -9,8 +9,10 @@ import { UserRoles } from '../user/user.constant';
 const router = express.Router();
 
 router.post('/login', validateRequest(AuthValidation.loginUserValidation), AuthController.loginUser )
-router.post('/forgot-password', auth(UserRoles.admin , UserRoles.faculty, UserRoles.student), validateRequest(AuthValidation.forgotPasswordValidation), AuthController.forgetPassword )
+router.post('/reset-password', auth(UserRoles.admin , UserRoles.faculty, UserRoles.student), validateRequest(AuthValidation.resetPasswordValidation), AuthController.resetPassword )
 
 router.post('/refresh-token', validateRequest(AuthValidation.refreshTokenValidation), AuthController.refreshToken )
+
+router.post('/forgot-password', AuthController.forgetPassword)
 
 export const AuthRoutes =  router;
