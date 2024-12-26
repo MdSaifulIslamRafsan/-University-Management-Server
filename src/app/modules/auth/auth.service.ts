@@ -85,8 +85,12 @@ const forgotPasswordIntoDB = async (
   );
   return null;
 };
+const refreshTokenFromCookie =   async (req, res) => {
+  
+}
 
 export const AuthService = {
   loginUserFromDB,
   forgotPasswordIntoDB,
+  refreshTokenFromCookie
 };

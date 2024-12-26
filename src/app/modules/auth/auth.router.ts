@@ -11,4 +11,6 @@ const router = express.Router();
 router.post('/login', validateRequest(AuthValidation.loginUserValidation), AuthController.loginUser )
 router.post('/forgot-password', auth(UserRoles.admin , UserRoles.faculty, UserRoles.student), validateRequest(AuthValidation.forgotPasswordValidation), AuthController.forgetPassword )
 
+router.post('/refresh-token', validateRequest(AuthValidation.refreshTokenValidation), AuthController.refreshToken )
+
 export const AuthRoutes =  router;

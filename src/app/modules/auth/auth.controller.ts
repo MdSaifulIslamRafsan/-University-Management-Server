@@ -41,7 +41,19 @@ const forgetPassword = catchAsync(async(req ,res)=>{
   })
 })
 
+const refreshToken = catchAsync(async (req , res) => {
+  const refreshToken = req.cookies.refreshToken;
+  const result = await AuthService.refreshTokenFromCookie(refreshToken)
+  sendResponse(res , {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Token refreshed successfully',
+    data: result,
+  })
+})
+
 export const AuthController = {
   loginUser,
-  forgetPassword
+  forgetPassword,
+  refreshToken
 };
