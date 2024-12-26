@@ -42,7 +42,7 @@ const forgetPassword = catchAsync(async(req ,res)=>{
 })
 
 const refreshToken = catchAsync(async (req , res) => {
-  const refreshToken = req.cookies.refreshToken;
+  const {refreshToken} = req.cookies;
   const result = await AuthService.refreshTokenFromCookie(refreshToken)
   sendResponse(res , {
     success: true,

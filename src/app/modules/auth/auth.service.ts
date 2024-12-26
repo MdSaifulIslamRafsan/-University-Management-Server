@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppErrors';
 import User from '../user/user.model';
 import { TForgotPassword, TLoginUser } from './auth.interface';
-import  { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt';
 import createJwtToken from './auth.utils';
@@ -85,8 +85,35 @@ const forgotPasswordIntoDB = async (
   );
   return null;
 };
-const refreshTokenFromCookie =   async (req, res) => {
-  
+const refreshTokenFromCookie =   async (refreshToken : string) => {
+
+const decoded  = jwt.verify(refreshToken, config.refresh_token as string) as JwtPayload;
+
+const { id , iat} = decoded;
+const user = await User.isUserExistByCustomId(id);
+if(!user){
+  throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
+}
+if (await User.isDeleted(id)) {
+  throw new AppError(StatusCodes.FORBIDDEN, 'User not found');
+}
+if(await User.isUserBlocked(id)){
+  throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
+}
+
+
+if(user?.passwordChangeAt && await User.isJWTTokenIssuedBeforePassword(iat as number , user?.passwordChangeAt)){
+  throw new AppError(StatusCodes.FORBIDDEN, 'user token not valid');
+}
+const jwtPayload = {
+  id: user.id,
+  role: user.role,
+};
+const accessToken = createJwtToken(jwtPayload, config.access_token as string , config.access_expires_in as string);
+return {
+  accessToken,
+}
+
 }
 
 export const AuthService = {
