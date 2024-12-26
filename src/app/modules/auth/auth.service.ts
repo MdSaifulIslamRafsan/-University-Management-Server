@@ -2,9 +2,10 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppErrors';
 import User from '../user/user.model';
 import { TForgotPassword, TLoginUser } from './auth.interface';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import  { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt';
+import createJwtToken from './auth.utils';
 const loginUserFromDB = async (payload: TLoginUser) => {
   const { id, password } = payload;
 
@@ -41,13 +42,13 @@ const loginUserFromDB = async (payload: TLoginUser) => {
     role: user.role,
   };
 
-  const accessToken = jwt.sign(jwtPayload, config.access_token as string, {
-    expiresIn: '10d',
-  });
+  const accessToken = createJwtToken(jwtPayload, config.access_token as string , config.access_expires_in as string);
+  const refreshToken = createJwtToken(jwtPayload, config.refresh_token as string , config.refresh_expires_in as string);
 
   return {
     needsPasswordChange: user.needsPasswordChange,
     accessToken,
+    refreshToken
   };
 };
 
