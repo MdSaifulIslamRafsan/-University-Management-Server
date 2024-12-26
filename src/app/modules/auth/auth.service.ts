@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt';
 import createJwtToken from './auth.utils';
+import sendEmail from '../../utils/sendEmail';
 const loginUserFromDB = async (payload: TLoginUser) => {
   const { id, password } = payload;
 
@@ -155,14 +156,15 @@ const forgotPasswordIntoDB = async (id: string) => {
     role: user.role,
   };
 
-  const accessToken = createJwtToken(
+  const resetToken = createJwtToken(
     jwtPayload,
     config.access_token as string,
     '5m',
   );
 
-  const resetPasswordUrl = `https://localhost:3000?id=${user?.id}&token=${accessToken}`;
-  return resetPasswordUrl;
+  const resetPasswordUrl = `${config.reset_password_ui_link}?id=${user?.id}&token=${resetToken}`;
+ 
+  sendEmail(user?.email , resetPasswordUrl)
 };
 
 export const AuthService = {

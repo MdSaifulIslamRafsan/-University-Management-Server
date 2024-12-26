@@ -12,6 +12,10 @@ export default {
     refresh_token : process.env.REFRESH_TOKEN,
     access_expires_in : process.env.JWT_ACCESS_EXPIRES_IN,
     refresh_expires_in : process.env.JWT_REFRESH_EXPIRES_IN,
+    node_mailer_gmail : process.env.NODE_MAILER_GMAIL,
+    node_mailer_pass : process.env.NODE_MAILER_PASS,
+    reset_password_ui_link : process.env.RESET_PASSWORD_UI_LINK
+
     
 }
 

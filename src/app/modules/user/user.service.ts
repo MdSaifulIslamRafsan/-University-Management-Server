@@ -19,7 +19,7 @@ const createStudentIntoDB = async (password : string ,payload: TStudent) => {
 
   //  set student role 
   userData.role = "student";
-
+  userData.email = payload.email;
 
 
   // find academic semester info
@@ -40,7 +40,7 @@ const session = await mongoose.startSession();
     session.startTransaction();
     // set auto generated id
   userData.id = await generatedStudentId(admissionSemester)
-
+   
   //  create new user and save student data in database [transaction-1]
     const newUser = await User.create([userData] , { session});
    
