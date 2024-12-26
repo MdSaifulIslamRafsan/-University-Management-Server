@@ -13,6 +13,6 @@ router.post('/reset-password', auth(UserRoles.admin , UserRoles.faculty, UserRol
 
 router.post('/refresh-token', validateRequest(AuthValidation.refreshTokenValidation), AuthController.refreshToken )
 
-router.post('/forgot-password', AuthController.forgetPassword)
+router.post('/forgot-password', validateRequest(AuthValidation.forgotPasswordValidation), AuthController.forgetPassword)
 
 export const AuthRoutes =  router;
