@@ -43,6 +43,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   };
 
   const accessToken = createJwtToken(jwtPayload, config.access_token as string , config.access_expires_in as string);
+ 
   const refreshToken = createJwtToken(jwtPayload, config.refresh_token as string , config.refresh_expires_in as string);
 
   return {
