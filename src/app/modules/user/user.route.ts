@@ -12,4 +12,6 @@ router.post('/create-student', auth(UserRoles.admin), validateRequest(studentVal
 
 router.get('/me', auth(UserRoles.admin , UserRoles.faculty, UserRoles.student), userController.getMe);
 
+router.patch('/change-status/:id', userController.changeStatus)
+
 export const UserRoutes = router;

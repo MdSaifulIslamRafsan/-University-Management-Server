@@ -42,7 +42,22 @@ const getMe = catchAsync(async(req , res) => {
 
 })
 
+const changeStatus = catchAsync(async(req , res) => {
+  const {id} = req.params
+  const result = await userService.changeStatusFromDB(id, req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Status changed successfully',
+    data: result,
+  })
+
+})
+
 export const userController = {
     createStudent,
-    getMe
+    getMe,
+    changeStatus,
+ 
 }
