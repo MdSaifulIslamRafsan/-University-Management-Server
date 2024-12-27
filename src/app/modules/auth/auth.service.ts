@@ -2,10 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppErrors';
 import User from '../user/user.model';
 import { TForgotPassword, TLoginUser } from './auth.interface';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import  { JwtPayload } from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt';
-import createJwtToken from './auth.utils';
+import { createJwtToken, verifyToken } from './auth.utils';
 import sendEmail from '../../utils/sendEmail';
 const loginUserFromDB = async (payload: TLoginUser) => {
   const { id, password } = payload;
@@ -62,6 +63,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   };
 };
 
+
 const changePasswordIntoDB = async (
   user: JwtPayload,
   payload: TForgotPassword,
@@ -99,10 +101,7 @@ const changePasswordIntoDB = async (
   return null;
 };
 const refreshTokenFromCookie = async (refreshToken: string) => {
-  const decoded = jwt.verify(
-    refreshToken,
-    config.refresh_token as string,
-  ) as JwtPayload;
+  const decoded = verifyToken(refreshToken, config.refresh_token as string);
 
   const { id, iat } = decoded;
   const user = await User.isUserExistByCustomId(id);
@@ -163,39 +162,45 @@ const forgotPasswordIntoDB = async (id: string) => {
   );
 
   const resetPasswordUrl = `${config.reset_password_ui_link}?id=${user?.id}&token=${resetToken}`;
- 
-  sendEmail(user?.email , resetPasswordUrl)
+
+  sendEmail(user?.email, resetPasswordUrl);
 };
 
-const resetPasswordFromDB = async(token: string, payload : {id: string , newPassword: string}) => {
-
+const resetPasswordFromDB = async (
+  token: string,
+  payload: { id: string; newPassword: string },
+) => {
   const user = await User.isUserExistByCustomId(payload?.id);
 
-  if(!user){
+  if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
-  if(await User.isDeleted(payload?.id)){
+  if (await User.isDeleted(payload?.id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
-  if(await User.isUserBlocked(payload?.id)){
+  if (await User.isUserBlocked(payload?.id)) {
     throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
   }
 
-  jwt.verify(token, config.access_token as string, function(err, decoded) {
-    if(err) {
+  const decoded = verifyToken(token, config.access_token as string)
+  if (decoded?.id !== payload?.id) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'Invalid user');
+  }
+
+/*   jwt.verify(token, config.access_token as string, function (err, decoded) {
+    if (err) {
       throw new AppError(StatusCodes.FORBIDDEN, 'Invalid token');
     }
-    if((decoded as JwtPayload)?.id !== payload?.id){
+    if ((decoded as JwtPayload)?.id !== payload?.id) {
       throw new AppError(StatusCodes.FORBIDDEN, 'Invalid user');
     }
-  });
-
-}
+  }); */
+};
 
 export const AuthService = {
   loginUserFromDB,
   forgotPasswordIntoDB,
-   changePasswordIntoDB,
+  changePasswordIntoDB,
   refreshTokenFromCookie,
-  resetPasswordFromDB
+  resetPasswordFromDB,
 };
