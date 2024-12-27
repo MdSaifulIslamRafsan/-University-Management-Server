@@ -62,7 +62,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
   };
 };
 
-const resetPasswordIntoDB = async (
+const changePasswordIntoDB = async (
   user: JwtPayload,
   payload: TForgotPassword,
 ) => {
@@ -170,6 +170,6 @@ const forgotPasswordIntoDB = async (id: string) => {
 export const AuthService = {
   loginUserFromDB,
   forgotPasswordIntoDB,
-  resetPasswordIntoDB,
+   changePasswordIntoDB,
   refreshTokenFromCookie,
 };

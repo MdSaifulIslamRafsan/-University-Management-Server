@@ -16,7 +16,7 @@ const sendEmail = async(to : string , html : string) => {
       await transporter.sendMail({
         from: config.node_mailer_gmail, 
         to: to, 
-        subject: "reset your password with in 10 minutes", 
+        subject: "reset your password with in 5 minutes", 
         html: html, 
       });
     

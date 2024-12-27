@@ -30,9 +30,9 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
-const resetPassword = catchAsync(async(req ,res)=>{
+const changePassword = catchAsync(async(req ,res)=>{
 
-  const result = await AuthService.resetPasswordIntoDB(req.user as JwtPayload , req.body)
+  const result = await AuthService.changePasswordIntoDB(req.user as JwtPayload , req.body)
   sendResponse(res , {
     success: true,
     statusCode: StatusCodes.OK,
@@ -66,6 +66,6 @@ const forgetPassword = catchAsync(async (req , res) => {
 export const AuthController = {
   loginUser,
   forgetPassword,
-  resetPassword,
+  changePassword,
   refreshToken
 };
