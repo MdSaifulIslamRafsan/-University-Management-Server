@@ -167,9 +167,35 @@ const forgotPasswordIntoDB = async (id: string) => {
   sendEmail(user?.email , resetPasswordUrl)
 };
 
+const resetPasswordFromDB = async(token: string, payload : {id: string , newPassword: string}) => {
+
+  const user = await User.isUserExistByCustomId(payload?.id);
+
+  if(!user){
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  if(await User.isDeleted(payload?.id)){
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  if(await User.isUserBlocked(payload?.id)){
+    throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
+  }
+
+  jwt.verify(token, config.access_token as string, function(err, decoded) {
+    if(err) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'Invalid token');
+    }
+    if((decoded as JwtPayload)?.id !== payload?.id){
+      throw new AppError(StatusCodes.FORBIDDEN, 'Invalid user');
+    }
+  });
+
+}
+
 export const AuthService = {
   loginUserFromDB,
   forgotPasswordIntoDB,
    changePasswordIntoDB,
   refreshTokenFromCookie,
+  resetPasswordFromDB
 };
