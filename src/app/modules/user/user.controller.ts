@@ -4,6 +4,7 @@ import { userService } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
+import { JwtPayload } from 'jsonwebtoken';
 
 
 
@@ -23,6 +24,25 @@ const createStudent  = catchAsync(async (req, res) => {
   })
 })
 
+const getMe = catchAsync(async(req , res) => {
+
+
+
+  const {id , role} = req.user as JwtPayload;
+
+  const result = await userService.getMeFromDB(id, role)
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'User data retrieved successfully',
+    data: result,
+  })
+
+
+})
+
 export const userController = {
     createStudent,
+    getMe
 }

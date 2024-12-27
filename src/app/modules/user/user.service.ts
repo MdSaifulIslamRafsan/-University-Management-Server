@@ -72,8 +72,27 @@ const session = await mongoose.startSession();
   
   };
 
+  const getMeFromDB = async (id : string , role : string) => {
+    
+  let result = null;
+  if (role === 'student') {
+    result = await Student.findOne({ id }).populate('user');
+  }
+  /* if (role === 'admin') {
+    result = await Admin.findOne({ id}).populate('user');
+  } */
+
+  /* if (role === 'faculty') {
+    result = await Faculty.findOne({ id}).populate('user');
+  } */
+
+  return result;
+
+  }
+
 
 
 export const userService = {
     createStudentIntoDB,
+    getMeFromDB
   };
