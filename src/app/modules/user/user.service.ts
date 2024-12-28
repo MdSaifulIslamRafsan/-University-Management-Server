@@ -9,6 +9,7 @@ import { TUser } from './user.interface';
 import User from './user.model';
 import { generatedStudentId } from './user.utils';
 import mongoose from 'mongoose';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // const user : TNewUser = {}
@@ -65,6 +66,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     );
   }
 };
+
+sendImageToCloudinary()
+
+
 
 const getMeFromDB = async (id: string, role: string) => {
   let result = null;

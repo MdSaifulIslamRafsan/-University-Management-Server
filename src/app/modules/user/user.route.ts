@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 // Define routes
-router.post('/create-student', auth(UserRoles.admin), validateRequest(studentValidations.createStudentValidationSchema), userController.createStudent);
+router.post('/create-student',  validateRequest(studentValidations.createStudentValidationSchema), userController.createStudent);
 
 router.get('/me', auth(UserRoles.admin , UserRoles.faculty, UserRoles.student), userController.getMe);
 
