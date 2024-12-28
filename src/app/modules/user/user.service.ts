@@ -11,7 +11,8 @@ import { generatedStudentId } from './user.utils';
 import mongoose from 'mongoose';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createStudentIntoDB = async (file: any, password: string, payload: TStudent) => {
   // const user : TNewUser = {}
   const userData: Partial<TUser> = {};
   //  if password is not provided then create a default password
@@ -38,6 +39,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     // set auto generated id
     userData.id = await generatedStudentId(admissionSemester);
 
+    const imageName = userData?.id + '-' + payload?.name?.firstName;
+
+    const {secure_url} =await sendImageToCloudinary(file.path , imageName)
+
     //  create new user and save student data in database [transaction-1]
     const newUser = await User.create([userData], { session });
 
@@ -47,6 +52,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     }
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
+    payload.profileImg = secure_url;
 
     // transaction -2
     const newStudent = await Student.create([payload], { session });
@@ -67,7 +73,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   }
 };
 
-sendImageToCloudinary()
+
 
 
 

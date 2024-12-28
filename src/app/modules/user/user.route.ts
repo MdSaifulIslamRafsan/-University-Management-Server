@@ -17,6 +17,7 @@ router.post(
     next();
   },
   validateRequest(studentValidations.createStudentValidationSchema),
+  userController.createStudent
    
 );
 
