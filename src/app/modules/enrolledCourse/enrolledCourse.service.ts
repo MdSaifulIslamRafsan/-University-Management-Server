@@ -60,7 +60,7 @@ const session = await mongoose.startSession();
   
     const maxCapacity = isOfferedCourseExists?.maxCapacity;
   
-    await OfferedCourse.findByIdAndUpdate(offeredCourse , {maxCapacity: maxCapacity - 1} , {new : true})
+    await OfferedCourse.findByIdAndUpdate(offeredCourse , {maxCapacity: maxCapacity - 1} , {new : true, session})
 
     await session.commitTransaction();
     await session.endSession();

@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppErrors';
 import User from '../user/user.model';
-import { TForgotPassword, TLoginUser } from './auth.interface';
+import { TChangePassword, TLoginUser } from './auth.interface';
 import  { JwtPayload } from 'jsonwebtoken';
 // import jwt from 'jsonwebtoken';
 import config from '../../config';
@@ -66,7 +66,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
 
 const changePasswordIntoDB = async (
   user: JwtPayload,
-  payload: TForgotPassword,
+  payload: TChangePassword,
 ) => {
   const { id, role } = user;
   const isUserExist = await User.isUserExistByCustomId(id);
@@ -195,6 +195,20 @@ const resetPasswordFromDB = async (
       throw new AppError(StatusCodes.FORBIDDEN, 'Invalid user');
     }
   }); */
+
+
+  const newPasswordHash = await bcrypt.hash(payload.newPassword, 10);
+
+  await User.findOneAndUpdate(
+    {id: decoded?.id, role : decoded?.role },
+    {
+      password: newPasswordHash,
+      needsPasswordChange: false,
+      passwordChangeAt: new Date(),
+    },
+    { new: true },
+  );
+  return null;
 };
 
 export const AuthService = {

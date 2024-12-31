@@ -3,7 +3,7 @@ export interface TLoginUser {
     password : string;
 }
 
-export interface TForgotPassword {
+export interface TChangePassword {
     oldPassword : string,
     newPassword : string;
 }
