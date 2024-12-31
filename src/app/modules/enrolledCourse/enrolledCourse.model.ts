@@ -74,6 +74,7 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>(
     },
     courseMark: {
       type: CourseMarkSchema,
+      default: {},
     },
     grade: {
       type: String,
